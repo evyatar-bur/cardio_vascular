@@ -12,11 +12,11 @@ Plot_flag = 1; % 0 = off , 1 = on
  
 %% system parameters:
 % Time parameters
-HR           = 60 + 6 ; % [BPM] % 60 + sum of last digits from all members
-dt           = 5e-4        ; % [sec]
-Heart_cycles = 20          ; % total heart cycles
-N_per_cycle      = 1/((HR/60)*dt)     ; % number of steps per heart cycle
-t = 1:dt:Heart_cycles;
+HR            = 60 + 6 ;        % [BPM] % 60 + sum of last digits from all members
+dt            = 5e-4        ;   % [sec]
+Heart_cycles  = 1         ;     % total heart cycles
+N_per_cycle   = 1/((HR/60)*dt); % number of steps per heart cycle
+t             = 0:dt:(Heart_cycles)*(60/HR);
   
 % Heart parameters
 V0                          = 15  ;                      % [ml] V0 for Plv calculation
