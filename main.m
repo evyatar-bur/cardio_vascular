@@ -14,7 +14,7 @@ Plot_flag = 1; % 0 = off , 1 = on
 % Time parameters
 HR            = 60 + 6      ;   % [BPM] % 60 + sum of last digits from all members
 dt            = 5e-4        ;   % [sec]
-Heart_cycles  = 5          ;   % total heart cycles
+Heart_cycles  = 20          ;   % total heart cycles
 N_per_cycle   = 1/((HR/60)*dt); % number of steps per heart cycle
 t             = 0:dt:(Heart_cycles)*(60/HR);
   
@@ -77,7 +77,7 @@ for CycleIdx = 1 : Heart_cycles % main loop for each heart cycle
         Va(StepInCycle)   = Va(StepInCycle-1) + (Qlv(StepInCycle-1)-Qp(StepInCycle-1))*dt; % arteries
         Vv(StepInCycle)   = Vv(StepInCycle-1) + (Qp(StepInCycle-1)-Qv(StepInCycle-1))*dt; % veins 
         %Pressures [mmHg] ...
-        Plv(StepInCycle)  = Plv(StepInCycle-1) + E(StepInCycle)*(Vlv(StepInCycle)-V0);    % left ventricle
+        Plv(StepInCycle)  = E(StepInCycle)*(Vlv(StepInCycle)-V0);    % left ventricle
         Pa(StepInCycle)   = Va(StepInCycle)/Ca;   % arterial capacitor
         Pv(StepInCycle)   = Vv(StepInCycle)/Cv;    % venous filling 
         Pao(StepInCycle)  = max(Pa(StepInCycle),Plv(StepInCycle));   % aorta
