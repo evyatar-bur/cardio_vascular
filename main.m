@@ -1,4 +1,4 @@
-clc ; clear all ; close all ;
+    clc ; clear all ; close all ;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% Simulation of the Cardiovascular System %%%%%%
@@ -87,20 +87,21 @@ for CycleIdx = 1 : Heart_cycles % main loop for each heart cycle
         Qv(StepInCycle)  = max(0,((Pv(StepInCycle)-Plv(StepInCycle))/Rv)) ;    % ventricle filling (inflow)
     end
         % Save each variable from the current cycle to a continuos variable:
-
+        start_ind = N_per_cycle*(CycleIdx-1)+1;
+        end_ind = N_per_cycle*CycleIdx;
         %VolumeS [ml] ...
-		Vlv_C(N_per_cycle*(CycleIdx-1)+1:N_per_cycle*CycleIdx) = Vlv  ; % left ventricle
-        Va_C(N_per_cycle*(CycleIdx-1)+1:N_per_cycle*CycleIdx)  = Va  ; % arteries
-        Vv_C(N_per_cycle*(CycleIdx-1)+1:N_per_cycle*CycleIdx)  = Vv  ; % veins 
+		Vlv_C(start_ind:end_ind) = Vlv  ; % left ventricle
+        Va_C(start_ind:end_ind)  = Va  ; % arteries
+        Vv_C(start_ind:end_ind)  = Vv  ; % veins 
         %PressureS [mmHg] ...
-        Plv_C(N_per_cycle*(CycleIdx-1)+1:N_per_cycle*CycleIdx)   = Plv;    % left ventricle
-        Pa_C(N_per_cycle*(CycleIdx-1)+1:N_per_cycle*CycleIdx)    = Pa;    % arterial capacitor
-        Pv_C(N_per_cycle*(CycleIdx-1)+1:N_per_cycle*CycleIdx)    = Pv;    % venous filling 
-        Pao_C(N_per_cycle*(CycleIdx-1)+1:N_per_cycle*CycleIdx)   = Pao;
+        Plv_C(start_ind:end_ind)   = Plv;    % left ventricle
+        Pa_C(start_ind:end_ind)    = Pa;    % arterial capacitor
+        Pv_C(start_ind:end_ind)    = Pv;    % venous filling 
+        Pao_C(start_ind:end_ind)   = Pao;
         %FlowS [ml/sec] ...
-        Qlv_C(N_per_cycle*(CycleIdx-1)+1:N_per_cycle*CycleIdx)     = Qlv;   % left ventricle (outflow)
-        Qp_C(N_per_cycle*(CycleIdx-1)+1:N_per_cycle*CycleIdx)      = Qp;   % peripheral resistance
-        Qv_C(N_per_cycle*(CycleIdx-1)+1:N_per_cycle*CycleIdx)      = Qv;   % ventricle filling (inflow)
+        Qlv_C(start_ind:end_ind)     = Qlv;   % left ventricle (outflow)
+        Qp_C(start_ind:end_ind)      = Qp;   % peripheral resistance
+        Qv_C(start_ind:end_ind)      = Qv;   % ventricle filling (inflow)
 
     % Find max and min of each cycle
       [Pao_max(CycleIdx),Pao_max_ind(CycleIdx)] = max(Pao);
@@ -127,15 +128,44 @@ end
  
 %% Plot
 if Plot_flag  
-    ... ; % Plotting commands:
-   plot(t(1:length(Pao_C)),Pao_C)
-   title('Aorta pressure as a funtion of time')
-   xlabel('Time (Sec)')
-   ylabel('Pressure (mmHG)')
+    % Plotting commands:
+   
+    % Plotting the Aorta pressure as a function of time - all cycles
+    figure(1)
+    plot(t(1:length(Pao_C)),Pao_C)
+    title('Aorta pressure as a function of time')
+    xlabel('Time (Sec)')
+    ylabel('Pressure (mmHg)')
     
-   hold on
-   scatter(Pao_max_ind*dt,Pao_max)
-   scatter(Pao_min_ind*dt,Pao_min)
+    % Adding the maximum and minimum point of each cycle
+    hold on
+    scatter(Pao_max_ind*dt,Pao_max)
+    scatter(Pao_min_ind*dt,Pao_min)
     
+    % Plotting the different pressures at steady state, as a function of time - one cycle
+    start_ind = N_per_cycle*(Heart_cycles-2)-(0.2/dt);
+    end_ind = N_per_cycle*(Heart_cycles-1)+(0.2/dt);
     
+    figure(2)
+    subplot(2,1,1)
+    plot(t(start_ind:end_ind),Plv_C(start_ind:end_ind))
+    hold on
+    plot(t(start_ind:end_ind),Pa_C(start_ind:end_ind))
+    plot(t(start_ind:end_ind),Pv_C(start_ind:end_ind))
+    plot(t(start_ind:end_ind),Pao_C(start_ind:end_ind))
+    set(gca, 'XLimSpec', 'Tight');
+    
+    legend('Plv','Pa','Pv','Pao','Location','northwest')
+    title('Different pressures as a function of time')
+    xlabel('Time (Sec)')
+    ylabel('Pressure (mmHg)')
+    
+    % Plotting the left ventricle Volume as a function of time
+    subplot(2,1,2)
+    plot(t(start_ind:end_ind),Vlv_C(start_ind:end_ind))
+    set(gca, 'XLimSpec', 'Tight');
+    title('Left ventricle volume as a function of time')
+    xlabel('Time (Sec)')
+    ylabel('Volume (mmHg)')
 end
+
