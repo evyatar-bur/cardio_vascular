@@ -1,18 +1,21 @@
-    clc ; clear all ; close all ;
+  %%  clc ; clear all ; close all ;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% Simulation of the Cardiovascular System %%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Complete the code in places where the "..." string appears %%
+HR            = 33;
+while HR<198
 
+HR_ind = 1;
 
 %% Flags:
 Plot_flag = 1; % 0 = off , 1 = on
  
 %% system parameters:
 % Time parameters
-HR            = 60 + 6      ;   % [BPM] % 60 + sum of last digits from all members
+%HR            = 33      ;   % [BPM] % 60 + sum of last digits from all members
 dt            = 5e-4        ;   % [sec]
 Heart_cycles  = 20          ;   % total heart cycles
 N_per_cycle   = 1/((HR/60)*dt); % number of steps per heart cycle
@@ -166,6 +169,26 @@ if Plot_flag
     set(gca, 'XLimSpec', 'Tight');
     title('Left ventricle volume as a function of time')
     xlabel('Time (Sec)')
-    ylabel('Volume (mmHg)')
+    ylabel('Volume (ml)')
 end
 
+    E_indexs = [32765 32836 33118 33281];
+    figure(3)
+    plot(t(E_indexs),(Plv_C(E_indexs)./(Vlv_C(E_indexs)-V0)))
+    title('varying elastance as a function of time')
+    xlabel('Time (Sec)')
+    ylabel('Time - varying elastance')
+    %set(gca, 'XLimSpec', 'Tight');
+    hold on
+    plot(t(32765:33281),E(32765:33281))
+    legend('Elastance calculated from pv loop','Elastance modeled as a sine wave','Location','south')
+   
+    
+    start_last_beat = Pao_max_ind(end-1);
+    end_last_beat = Pao_max_ind(end);
+    mean_pao(HR_ind) = mean(Pao_C(start_last_beat:end_last_beat));
+    
+    HR = HR + 11;
+    HR_ind =HR_ind + 1;
+end
+    
