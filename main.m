@@ -1,4 +1,4 @@
-  %%  clc ; clear all ; close all ;
+  clc ; clear all ; close all ;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% Simulation of the Cardiovascular System %%%%%%
@@ -8,8 +8,8 @@
 
 %% Flags:
 Plot_flag = 1; % 0 = off , 1 = on
-% Keep Mean Pao flag on only if you wish to compute mean Pao - other plots will not be shown 
-Mean_Pao_flag = 0; % 0 = off , 1 = on
+% Keep Mean Pao flag on only if you wish to compute mean Pao. 
+Mean_Pao_flag = 1; % 0 = off , 1 = on
 
 %% Defining HR vector
 
@@ -19,7 +19,6 @@ if Mean_Pao_flag % If pao flag is on, for loop will run on the different HR, fro
     
    HR_Loop = 33:11:198;  
    HR_ind_vec = (1:length(HR_Loop));
-   Plot_flag = 0; % plots will not be shown, excep mean pao plot
    
 end
    
@@ -34,7 +33,7 @@ end
 
 dt            = 5e-4        ;   % [sec]
 Heart_cycles  = 20          ;   % total heart cycles
-N_per_cycle   = 1/((HR/60)*dt); % number of steps per heart cycle
+N_per_cycle   = round(1/((HR/60)*dt)); % number of steps per heart cycle
 t             = 0:dt:(Heart_cycles)*(60/HR);
   
 % Heart parameters
@@ -108,8 +107,8 @@ for CycleIdx = 1 : Heart_cycles % main loop for each heart cycle
         Qv(StepInCycle)   = max(0,((Pv(StepInCycle)-Plv(StepInCycle))/Rv)) ;   % ventricle filling (inflow)
     end
         % Save each variable from the current cycle to a continuos variable:
-        start_ind = N_per_cycle*(CycleIdx-1)+1;
-        end_ind = N_per_cycle*CycleIdx;
+        start_ind = round(N_per_cycle*(CycleIdx-1)+1);
+        end_ind = round(N_per_cycle*CycleIdx);
         %VolumeS [ml] 
 		Vlv_C(start_ind:end_ind) = Vlv ;  % left ventricle
         Va_C(start_ind:end_ind)  = Va  ;  % arteries
@@ -148,7 +147,7 @@ for CycleIdx = 1 : Heart_cycles % main loop for each heart cycle
 end
  
 %% Plot
-if Plot_flag  
+if Plot_flag  && HR == 66;
     % Plotting commands:
    
     % Plotting the Aorta pressure as a function of time - all cycles
@@ -209,12 +208,14 @@ end
     end_last_beat = Pao_max_ind(end);
     mean_pao(HR_ind) = mean(Pao_C(start_last_beat:end_last_beat));
     
+    if Mean_Pao_flag
     % Clearing variables to prevent code errors
     clearvars -except HR_ind mean_pao Mean_Pao_flag HR_Loop Plot_flag
+    end
 end
 
 
-if Mean_Pao_flag
+if Mean_Pao_flag && Plot_flag
 
 figure(4)
 % Plotting the heart mean pressure in the aorta as a function the HR 
