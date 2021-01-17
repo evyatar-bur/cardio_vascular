@@ -10,7 +10,7 @@
 Plot_flag = 1; % 0 = off , 1 = on
 
 % Keep Mean Pao flag on only if you wish to compute mean Pao
-Mean_Pao_flag = 1; % 0 = off , 1 = on
+Mean_Pao_flag = 0; % 0 = off , 1 = on
 % Note that if mean pao flag is on, most parameters will be cleared from workspace
 
 %% Defining HR vector
